@@ -1,4 +1,5 @@
 using Blazor8FileUpload.Components;
+using Blazor8FileUpload.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// Add FileUploadManager Services
+builder.Services.AddSingleton(typeof(FileUploadManager));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
