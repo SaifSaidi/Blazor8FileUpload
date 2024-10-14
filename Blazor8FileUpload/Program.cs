@@ -1,5 +1,5 @@
 using Blazor8FileUpload.Components;
-using Blazor8FileUpload.Services;
+using Blazor8FileUpload.Services.FileManageServices;
 
 var builder = WebApplication.CreateBuilder(args);
 

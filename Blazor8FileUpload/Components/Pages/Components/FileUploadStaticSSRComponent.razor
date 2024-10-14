@@ -1,0 +1,61 @@
+﻿@* @    using Blazor8FileUpload.Services
+@    using Blazor8FileUpload.Services.Constants
+@    using Blazor8FileUpload.Services.ValueObjects
+@    using Services.Enums
+
+@inject FileUploadManager FileUploadManager
+
+<h3>File Upload SSR Component</h3>
+
+<EditForm Model="@File"
+    FormName="_uploadfileform" 
+    OnValidSubmit="Upload" method="post" enctype="multipart/form-data" Enhance>
+    <DataAnnotationsValidator />
+    <InputText @bind-Value="@File.Name" />
+    <input type="file" name="File.File" />
+
+    <button  class="bg-primary p-2 border"  type="submit">
+        Upload
+    </button>
+
+</EditForm>
+
+ 
+
+   
+     
+    <p class="text-danger">
+        @UploadExecptionErrorMessage
+    </p>
+
+@code {
+    [SupplyParameterFromForm]
+    public FileModelValueObject File { get; set; } = new()
+    { 
+        Name = "file",
+        Size = 0
+    };
+
+    private string UploadExecptionErrorMessage = "";
+     
+    async Task Upload()
+    {
+        try
+        {
+            
+                await FileUploadManager.HandleBrowserFileUpload(File,
+    FileUploadCategoryEnum.Category_SVG,
+           FileUploadConstants.Extensions([".svg"]),
+           "a/b/c/d");
+
+                Console.WriteLine($"Upload To: {FileUploadManager.FileUploadedPath}");
+        
+           
+        } catch (Exception _e)
+        {
+            UploadExecptionErrorMessage = _e.Message;
+        }
+    }
+
+}
+ *@

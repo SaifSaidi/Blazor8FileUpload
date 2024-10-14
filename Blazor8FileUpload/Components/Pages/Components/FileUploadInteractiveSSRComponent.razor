@@ -1,0 +1,77 @@
+﻿@using Blazor8FileUpload.Services.FileManageServices
+@using Blazor8FileUpload.Services.FileManageServices.Constants
+@using Blazor8FileUpload.Services.FileManageServices.ValueObjects
+@using Services.FileManageServices.Enums;
+
+@inject FileUploadManager FileUploadManager
+
+@rendermode InteractiveServer
+
+<h3>File Upload Component Interactive</h3>
+
+<div> 
+    <h2> Upload Image: </h2>
+    <InputFile OnChange="LoadImage" />
+
+    <button class="bg-primary p-2 border" @onclick="Upload">
+        Upload
+    </button>
+</div>
+
+
+<p class="text-danger">
+    @UploadErrorMessage
+</p>
+
+@if (UploadSuccess)
+{
+    <p class="text-success">
+        @($"Uploaded To: {FileUploadManager.FileUploadedPath}") 👏
+    </p>
+}
+
+@code {
+    private SSRFileModelValueObject? SSRFileModelValueObject;
+    private string UploadErrorMessage = "";
+    private bool UploadSuccess = false;
+    private void LoadImage(InputFileChangeEventArgs e)
+    {
+        SSRFileModelValueObject = new()
+            {
+                File = e.File, 
+                MaxSizeInMB = 2,
+                FileUploadCategory = FileUploadCategoryEnum.Images, 
+                Extensions = FileUploadConstants.ImageExtensions
+            }; 
+    }
+
+    async Task Upload()
+    {
+
+        if (SSRFileModelValueObject == null)
+        {
+            UploadErrorMessage = "Select File!";
+        } else
+        {
+            try
+            {
+                var uploaded = await FileUploadManager.HandleBrowserFileUpload(SSRFileModelValueObject);
+
+                if (uploaded)
+                {
+
+                    UploadSuccess = true;
+                    UploadErrorMessage = "";
+                    SSRFileModelValueObject = null;
+                }
+            }
+            catch (Exception _e)
+            {
+                UploadErrorMessage = _e.Message;
+            }
+
+        }
+
+    }
+
+}
